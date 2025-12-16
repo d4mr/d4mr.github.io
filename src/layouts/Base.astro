@@ -16,6 +16,11 @@ interface Props {
 const {
 	meta: { title, description = siteConfig.description, ogImage, articleDate },
 } = Astro.props;
+
+// Compute redirect URL for fallback link
+const NEW_SITE = "https://d4mr.com";
+const pathname = Astro.url.pathname;
+const redirectURL = `${NEW_SITE}${pathname.replace(/\/$/, "") || "/"}`;
 ---
 
 <html lang={siteConfig.lang}>
@@ -31,12 +36,11 @@ const {
 		<ViewTransitions />
 	</head>
 	<body>
-		<ThemeProvider />
-		<SkipLink />
-		<Header transition:persist />
-		<main id="main">
-			<slot />
+		<main id="main" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: system-ui, sans-serif; text-align: center; padding: 2rem;">
+			<div>
+				<p>This site has moved to <a href={redirectURL} style="color: #0066cc; text-decoration: underline;">{redirectURL}</a></p>
+				<p style="margin-top: 1rem; color: #666;">Redirecting automatically...</p>
+			</div>
 		</main>
-		<Footer />
 	</body>
 </html>

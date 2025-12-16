@@ -11,7 +11,22 @@ const { articleDate, description, ogImage, title } = Astro.props;
 
 const titleSeparator = "•";
 const siteTitle = `${title} ${titleSeparator} ${siteConfig.title}`;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Redirect destination - map old paths to new d4mr.com paths
+const NEW_SITE = "https://d4mr.com";
+const pathname = Astro.url.pathname;
+
+// Map old paths to new paths on d4mr.com
+function getRedirectUrl(path: string): string {
+	// Remove trailing slashes for consistency
+	const normalizedPath = path.replace(/\/$/, "") || "/";
+	
+	// Everything maps directly
+	return `${NEW_SITE}${normalizedPath}`;
+}
+
+const redirectURL = getRedirectUrl(pathname);
+const canonicalURL = new URL(redirectURL);
 const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url).href;
 ---
 
@@ -19,6 +34,9 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
 <meta content="IE=edge" http-equiv="X-UA-Compatible" />
 <title>{siteTitle}</title>
+
+{/* Redirect to new site */}
+<meta http-equiv="refresh" content={`0; url=${redirectURL}`} />
 
 {/* Icons / Favicon */}
 <link href="/favicon.ico" rel="icon" sizes="any" />
